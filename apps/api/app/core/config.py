@@ -36,9 +36,13 @@ class Settings(BaseSettings):
             return v
         return ["http://localhost:3000", "http://127.0.0.1:3000"]
 
+    # Project root is 4 levels up from this file (apps/api/app/core/config.py)
+    _PROJECT_ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+    _DEFAULT_DB_FILE: str = os.path.join(_PROJECT_ROOT, "phishguard.db").replace("\\", "/")
+
     # Database
-    DATABASE_URL: str = "sqlite+aiosqlite:///./phishguard.db"
-    DATABASE_SYNC_URL: str = "sqlite:///./phishguard.db"
+    DATABASE_URL: str = f"sqlite+aiosqlite:///{_DEFAULT_DB_FILE}"
+    DATABASE_SYNC_URL: str = f"sqlite:///{_DEFAULT_DB_FILE}"
 
     # MongoDB Configuration
     MONGODB_URL: str = "mongodb://localhost:27017"
@@ -47,8 +51,6 @@ class Settings(BaseSettings):
     MONGODB_TIMEOUT_MS: int = 3000
 
     # ML Artifacts Paths
-    # Project root is 4 levels up from this file (apps/api/app/core/config.py)
-    _PROJECT_ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
     MODEL_ARTIFACTS_DIR: str = os.path.join(_PROJECT_ROOT, "ml", "artifacts")
     URL_MODEL_PATH: str = os.path.join(MODEL_ARTIFACTS_DIR, "url_phishing_model.joblib")
     URL_SCALER_PATH: str = os.path.join(MODEL_ARTIFACTS_DIR, "url_scaler.joblib")
