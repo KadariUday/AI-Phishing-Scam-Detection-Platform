@@ -44,6 +44,19 @@ class Settings(BaseSettings):
     DATABASE_URL: str = f"sqlite+aiosqlite:///{_DEFAULT_DB_FILE}"
     DATABASE_SYNC_URL: str = f"sqlite:///{_DEFAULT_DB_FILE}"
 
+    @field_validator("DATABASE_URL", "DATABASE_SYNC_URL", mode="before")
+    @classmethod
+    def assemble_db_url(cls, v: Union[str, None]) -> str:
+        _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+        db_file = os.path.join(_PROJECT_ROOT, "phishguard.db").replace("\\", "/")
+        if not v:
+            return f"sqlite+aiosqlite:///{db_file}"
+        if isinstance(v, str) and ("sqlite" in v):
+            if "aiosqlite" in v:
+                return f"sqlite+aiosqlite:///{db_file}"
+            return f"sqlite:///{db_file}"
+        return str(v)
+
     # MongoDB Configuration
     MONGODB_URL: str = "mongodb://localhost:27017"
     MONGODB_DB_NAME: str = "phishguard_db"

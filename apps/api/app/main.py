@@ -14,12 +14,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from apps.api.app.core.config import settings
-from apps.api.app.db.base import Base
 from apps.api.app.db.session import engine, AsyncSessionLocal
 from apps.api.app.api.v1.api import api_router
 from apps.api.app.ml.model_loader import model_loader
-from apps.api.app.models.user import User
-from apps.api.app.models.scan import Scan
+from apps.api.app.models import Base, User, Scan, Report, AuditLog
 from apps.api.app.core.security import get_password_hash
 
 from apps.api.app.db.mongodb import mongodb
