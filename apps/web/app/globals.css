@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 3%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 190 100% 50%;
+    --primary-foreground: 222 47% 4%;
+    --muted: 217 33% 12%;
+    --muted-foreground: 215 20% 65%;
+    --border: 217 33% 16%;
+    --radius: 0.75rem;
+  }
+
+  body {
+    @apply bg-cyber-950 text-slate-100 antialiased min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden;
+    background-color: #040711;
+  }
+}
+
+/* ==============================================================================
+   AURORA ATMOSPHERIC AMBIENCE
+   ============================================================================== */
+.aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.aurora-blob-1 {
+  position: absolute;
+  top: -15%;
+  left: -10%;
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, rgba(0, 245, 255, 0.08) 0%, rgba(13, 21, 42, 0) 70%);
+  filter: blur(60px);
+  border-radius: 50%;
+  animation: auroraDrift 24s ease-in-out infinite alternate;
+}
+
+.aurora-blob-2 {
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(121, 40, 202, 0.08) 0%, rgba(13, 21, 42, 0) 70%);
+  filter: blur(80px);
+  border-radius: 50%;
+  animation: auroraDrift 28s ease-in-out infinite alternate-reverse;
+}
+
+.aurora-blob-3 {
+  position: absolute;
+  top: 40%;
+  left: 30%;
+  width: 45vw;
+  height: 45vw;
+  background: radial-gradient(circle, rgba(0, 240, 168, 0.05) 0%, rgba(13, 21, 42, 0) 70%);
+  filter: blur(70px);
+  border-radius: 50%;
+  animation: auroraDrift 20s ease-in-out infinite alternate;
+}
+
+/* Subtle cyber tech grid */
+.cyber-grid-overlay {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+}
+
+/* ==============================================================================
+   DARK GLASSMORPHISM & SOFT NEUMORPHISM TOKENS
+   ============================================================================== */
+.glass-hud {
+  background: rgba(8, 14, 30, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 36px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-hud-hover:hover {
+  border-color: rgba(0, 245, 255, 0.35);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12),
+    0 0 24px -4px rgba(0, 245, 255, 0.18),
+    0 20px 40px -10px rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Inset Soft Neumorphic inputs */
+.neu-input {
+  background: #050813;
+  box-shadow: 
+    inset 2px 2px 6px rgba(0, 0, 0, 0.7),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.04),
+    0 1px 0 0 rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
+}
+
+.neu-input:focus {
+  border-color: rgba(0, 245, 255, 0.6);
+  box-shadow: 
+    inset 2px 2px 6px rgba(0, 0, 0, 0.7),
+    0 0 16px -2px rgba(0, 245, 255, 0.25);
+}
+
+/* ==============================================================================
+   CYBERSECURITY HUD ACCENTS & CORNER BRACKETS
+   ============================================================================== */
+.hud-corner {
+  position: relative;
+}
+
+.hud-corner::before,
+.hud-corner::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  border-color: rgba(0, 245, 255, 0.5);
+  transition: all 0.25s ease;
+}
+
+.hud-corner::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.hud-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+.hud-corner:hover::before,
+.hud-corner:hover::after {
+  border-color: rgba(0, 245, 255, 0.9);
+  width: 12px;
+  height: 12px;
+}
+
+/* Telemetry scan laser line */
+.laser-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00f5ff, #00f0a8, transparent);
+  box-shadow: 0 0 12px #00f5ff;
+  pointer-events: none;
+}
+
+/* Custom Sleek Cyber Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #040711;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #17243e;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00f5ff;
+}

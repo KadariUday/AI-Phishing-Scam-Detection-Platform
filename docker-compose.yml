@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: phishguard-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: phishguard
+      POSTGRES_PASSWORD: phishguard_secure_password_2026
+      POSTGRES_DB: phishguard_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U phishguard -d phishguard_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - phishguard-net
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: phishguard-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://phishguard:phishguard_secure_password_2026@postgres:5432/phishguard_db
+      - DATABASE_SYNC_URL=postgresql://phishguard:phishguard_secure_password_2026@postgres:5432/phishguard_db
+      - JWT_SECRET_KEY=phishguard-production-super-secret-jwt-signing-key-2026
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000","http://web:3000"]
+      - MODEL_ARTIFACTS_DIR=/app/ml/artifacts
+      - URL_MODEL_PATH=/app/ml/artifacts/url_phishing_model.joblib
+      - URL_SCALER_PATH=/app/ml/artifacts/url_scaler.joblib
+      - URL_FEATURE_NAMES_PATH=/app/ml/artifacts/url_features.json
+      - NLP_MODEL_PATH=/app/ml/artifacts/nlp_scam_model.joblib
+      - NLP_VECTORIZER_PATH=/app/ml/artifacts/nlp_vectorizer.joblib
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - phishguard-net
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    container_name: phishguard-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+      - NEXT_PUBLIC_APP_NAME=PhishGuard AI
+    depends_on:
+      - api
+    networks:
+      - phishguard-net
+
+volumes:
+  postgres_data:
+
+networks:
+  phishguard-net:
+    driver: bridge

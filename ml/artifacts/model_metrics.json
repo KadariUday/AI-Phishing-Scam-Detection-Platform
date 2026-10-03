@@ -1,0 +1,153 @@
+{
+  "timestamp": "2026-10-03T09:04:13Z",
+  "pipeline_duration_seconds": 5.46,
+  "platform_version": "1.0.0",
+  "url_phishing_model": {
+    "model_type": "RandomForest",
+    "feature_names": [
+      "url_length",
+      "domain_length",
+      "path_length",
+      "query_length",
+      "subdomain_count",
+      "dot_count",
+      "hyphen_count",
+      "digit_count",
+      "special_character_count",
+      "has_ip",
+      "has_https",
+      "has_at_symbol",
+      "has_double_slash",
+      "has_punycode",
+      "has_percent_encoding",
+      "has_suspicious_tld",
+      "has_shortener",
+      "entropy",
+      "hostname_entropy",
+      "path_entropy",
+      "query_parameter_count"
+    ],
+    "feature_importances": {
+      "special_character_count": 0.2371,
+      "query_length": 0.1851,
+      "url_length": 0.1447,
+      "entropy": 0.1053,
+      "hyphen_count": 0.0705,
+      "has_https": 0.0488,
+      "digit_count": 0.0441,
+      "path_length": 0.0348,
+      "hostname_entropy": 0.0286,
+      "query_parameter_count": 0.0282,
+      "has_shortener": 0.028,
+      "domain_length": 0.0176,
+      "path_entropy": 0.0106,
+      "has_suspicious_tld": 0.0062,
+      "has_ip": 0.0034,
+      "subdomain_count": 0.0033,
+      "dot_count": 0.0028,
+      "has_punycode": 0.0011,
+      "has_at_symbol": 0.0,
+      "has_double_slash": 0.0,
+      "has_percent_encoding": 0.0
+    },
+    "metrics": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "confusion_matrix": [
+        [
+          240,
+          0
+        ],
+        [
+          0,
+          240
+        ]
+      ]
+    },
+    "all_model_benchmarks": {
+      "RandomForest": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "confusion_matrix": [
+          [
+            240,
+            0
+          ],
+          [
+            0,
+            240
+          ]
+        ]
+      },
+      "GradientBoosting": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "confusion_matrix": [
+          [
+            240,
+            0
+          ],
+          [
+            0,
+            240
+          ]
+        ]
+      },
+      "LogisticRegression": {
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "roc_auc": 1.0,
+        "pr_auc": 1.0,
+        "confusion_matrix": [
+          [
+            240,
+            0
+          ],
+          [
+            0,
+            240
+          ]
+        ]
+      }
+    },
+    "training_samples": 2400,
+    "version": "1.0.0"
+  },
+  "nlp_scam_model": {
+    "model_type": "LogisticRegression (TF-IDF 1-3 ngrams)",
+    "metrics": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1_score": 1.0,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "confusion_matrix": [
+        [
+          160,
+          0
+        ],
+        [
+          0,
+          160
+        ]
+      ],
+      "vocabulary_size": 2754
+    },
+    "version": "1.0.0"
+  }
+}
