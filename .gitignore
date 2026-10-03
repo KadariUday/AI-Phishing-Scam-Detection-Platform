@@ -44,7 +44,9 @@ htmlcov/
 *.sln
 *.sw?
 .idea/
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 *.sublime-workspace
 *.sublime-project
 Thumbs.db
