@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Shield, Lock, Mail, ArrowRight, AlertCircle, Terminal } from "lucide-react";
+import { Shield, Lock, Mail, ArrowRight, AlertCircle, KeyRound, CheckCircle2 } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function LoginPage() {
@@ -21,56 +21,56 @@ export default function LoginPage() {
       await api.login(email, password);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Failed to authenticate. Please check your credentials.");
+      setError(err.message || "Authentication failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleUseDemo = (demoEmail: string, demoPass: string) => {
+    setEmail(demoEmail);
+    setPassword(demoPass);
+  };
+
   return (
-    <div className="min-h-screen bg-cyber-950 text-slate-100 flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* 1. Aurora Atmospheric Background */}
-      <div className="aurora-bg">
-        <div className="aurora-blob-1" />
-        <div className="aurora-blob-2" />
-        <div className="aurora-blob-3" />
-      </div>
+    <div className="min-h-screen bg-[#090D16] text-slate-100 flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden">
+      {/* Background Gradients */}
+      <div className="fixed inset-0 bg-radial-gradient pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-grid-pattern pointer-events-none z-0 opacity-60" />
 
-      {/* 2. Cyber Grid */}
-      <div className="fixed inset-0 cyber-grid-overlay pointer-events-none z-0 opacity-80" />
-
-      {/* 3. Header Branding */}
+      {/* Brand Header */}
       <Link href="/" className="flex items-center gap-3 mb-8 relative z-10 group">
-        <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 shadow-lg shadow-cyan-500/25 group-hover:shadow-cyan-400/40 transition-all">
-          <Shield className="w-6 h-6 text-slate-950 stroke-[2.5]" />
+        <div className="p-2.5 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20 group-hover:bg-blue-500 transition-colors">
+          <Shield className="w-6 h-6" />
         </div>
-        <span className="text-xl font-extrabold tracking-tight text-slate-100 flex items-center gap-1.5">
-          PHISHGUARD <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">AI</span>
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xl font-bold tracking-tight text-white">
+            PhishGuard
+          </span>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">
+            SOC
+          </span>
+        </div>
       </Link>
 
-      {/* 4. Login Card with HUD brackets & Glassmorphism */}
-      <div className="w-full max-w-md glass-hud hud-corner rounded-2xl p-8 relative z-10 shadow-2xl backdrop-blur-2xl">
+      {/* Login Card */}
+      <div className="w-full max-w-md panel-card p-8 relative z-10">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-            <Terminal className="w-3 h-3 text-cyan-400" />
-            <span>OPERATOR CONSOLE ACCESS</span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-100 tracking-tight">Analyst Sign In</h2>
-          <p className="text-xs text-slate-400 mt-1 font-mono">
-            Authenticate to access live detection pipeline
+          <h2 className="text-2xl font-bold text-white tracking-tight">Security Analyst Sign In</h2>
+          <p className="text-xs text-slate-400 mt-1">
+            Access real-time detection pipeline and threat workbench
           </p>
         </div>
 
         {error && (
-          <div className="p-3.5 mb-5 rounded-xl bg-rose-950/40 border border-rose-500/40 flex flex-col gap-1 text-xs text-rose-300 shadow-lg shadow-rose-950/50">
+          <div className="p-3.5 mb-5 rounded-lg bg-rose-950/20 border border-rose-900/30 flex flex-col gap-1 text-xs text-rose-300">
             <div className="flex items-center gap-2 font-medium">
               <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
               <span>{error}</span>
             </div>
             {error.toLowerCase().includes("sign up") && (
-              <Link href="/register" className="mt-1 ml-6 text-cyan-300 font-bold hover:underline">
-                → Click here to Create an Account
+              <Link href="/register" className="mt-1 ml-6 text-blue-400 font-semibold hover:underline">
+                &rarr; Click here to Create an Account
               </Link>
             )}
           </div>
@@ -78,40 +78,43 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-xs font-mono font-bold text-slate-300 block mb-1.5 uppercase tracking-wider">
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 uppercase tracking-wider">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="analyst@phishguard.ai"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl neu-input text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all font-mono"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
               />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
                 Password
               </label>
-              <Link href="/forgot-password" className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 transition-colors">
-                Forgot password?
+              <Link
+                href="/forgot-password"
+                className="text-[11px] text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                Forgot Password?
               </Link>
             </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl neu-input text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all font-mono"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
               />
             </div>
           </div>
@@ -119,46 +122,42 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-3 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-hud-cyan disabled:opacity-50"
+            className="w-full py-2.5 mt-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm"
           >
-            <span>{loading ? "AUTHENTICATING..." : "AUTHORIZE SESSION"}</span>
+            <span>{loading ? "Authenticating..." : "Sign In to Platform"}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        {/* Demo Fast-Fill helper */}
-        <div className="mt-6 pt-4 border-t border-white/[0.06] text-center">
-          <span className="text-[10px] text-slate-400 block mb-2 font-mono uppercase tracking-wider font-semibold">
-            One-Click Demo Credentials
+        {/* Demo Credentials Box */}
+        <div className="mt-6 pt-5 border-t border-slate-800">
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+            Pre-Seeded Demo Accounts:
           </span>
-          <div className="flex justify-center gap-2">
+          <div className="grid grid-cols-2 gap-2 text-xs">
             <button
-              onClick={() => {
-                setEmail("analyst@phishguard.ai");
-                setPassword("Analyst123!");
-              }}
               type="button"
-              className="px-3 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-[11px] text-slate-300 font-mono transition-all hover:border-cyan-500/40"
+              onClick={() => handleUseDemo("analyst@phishguard.ai", "Analyst123!")}
+              className="p-2 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-left transition-colors"
             >
-              Analyst Role
+              <span className="text-[10px] text-blue-400 font-mono font-bold block">Security Analyst</span>
+              <span className="text-slate-300 font-mono text-[11px] truncate block">analyst@phishguard.ai</span>
             </button>
             <button
-              onClick={() => {
-                setEmail("admin@phishguard.ai");
-                setPassword("AdminSecure2026!");
-              }}
               type="button"
-              className="px-3 py-1.5 rounded-lg bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/40 text-[11px] text-cyan-300 font-mono transition-all"
+              onClick={() => handleUseDemo("admin@phishguard.ai", "AdminSecure2026!")}
+              className="p-2 rounded-lg bg-slate-950 hover:bg-slate-900 border border-slate-800 text-left transition-colors"
             >
-              Admin Role
+              <span className="text-[10px] text-emerald-400 font-mono font-bold block">Lead SOC Admin</span>
+              <span className="text-slate-300 font-mono text-[11px] truncate block">admin@phishguard.ai</span>
             </button>
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-6 font-mono">
+        <p className="text-center text-xs text-slate-400 mt-6">
           Need an analyst account?{" "}
-          <Link href="/register" className="text-cyan-400 hover:text-cyan-300 font-bold underline transition-colors">
-            Register Operator Seat
+          <Link href="/register" className="text-blue-400 hover:text-blue-300 font-semibold underline transition-colors">
+            Register Here
           </Link>
         </p>
       </div>

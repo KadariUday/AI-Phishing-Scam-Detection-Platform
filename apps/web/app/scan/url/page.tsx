@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Globe, Search, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
+import { Globe, Search, AlertCircle, RefreshCw, Sparkles, CheckCircle2 } from "lucide-react";
 import { DashboardShell } from "@/components/DashboardShell";
 import { ScanResultView } from "@/components/ScanResultView";
 import { ScanResultData } from "@/lib/types";
@@ -11,7 +11,7 @@ const PRESET_URLS = [
   {
     label: "Bare IP Phishing",
     url: "http://192.168.1.1/paypal/login-verification.php?token=92841",
-    tag: "High Threat",
+    tag: "High Risk",
   },
   {
     label: "Punycode Homograph",
@@ -58,31 +58,31 @@ export default function URLScannerPage() {
 
   return (
     <DashboardShell>
-      <div className="space-y-8 max-w-5xl mx-auto">
-        {/* 1. Header */}
-        <div>
+      <div className="space-y-6 max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-800">
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <span className="p-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <Globe className="w-4 h-4" />
             </span>
-            <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
               Static Lexical & ML Classifier
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-            Deep URL Threat Scanner
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            URL Threat Inspection
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Static 21-dimensional feature extraction, Shannon entropy profiling, and zero-day phishing detection without dynamic SSRF risk.
+          <p className="text-xs text-slate-400 mt-0.5">
+            Static 21-dimensional feature extraction, Shannon entropy profiling, and zero-day phishing detection.
           </p>
         </div>
 
-        {/* 2. Input Form Box */}
-        <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl">
+        {/* Input Form Box */}
+        <div className="panel-card p-6 sm:p-8">
           <form onSubmit={handleScan} className="space-y-4">
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-2">
-                Target URL
+                Target URL or Domain
               </label>
               <div className="relative flex items-center">
                 <input
@@ -91,12 +91,12 @@ export default function URLScannerPage() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://example.com/login or paste a suspicious link..."
-                  className="w-full pl-4 pr-32 py-3.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors shadow-inner"
+                  className="w-full pl-4 pr-32 py-3 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                 />
                 <button
                   type="submit"
                   disabled={loading || !url.trim()}
-                  className="absolute right-2 px-5 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-cyan-500/20"
+                  className="absolute right-2 px-4 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
                 >
                   {loading ? (
                     <>
@@ -106,30 +106,28 @@ export default function URLScannerPage() {
                   ) : (
                     <>
                       <Search className="w-3.5 h-3.5" />
-                      <span>Analyze URL</span>
+                      <span>Inspect URL</span>
                     </>
                   )}
                 </button>
               </div>
             </div>
 
-            {/* Quick Preset Buttons */}
-            <div>
-              <span className="text-[11px] font-semibold text-slate-400 block mb-2">
-                Quick Test Samples:
+            {/* Presets */}
+            <div className="pt-2">
+              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+                Quick Test Vectors:
               </span>
               <div className="flex flex-wrap gap-2">
-                {PRESET_URLS.map((item, i) => (
+                {PRESET_URLS.map((preset, i) => (
                   <button
                     key={i}
                     type="button"
-                    onClick={() => handlePresetSelect(item.url)}
-                    className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-cyan-300 font-medium transition-colors flex items-center gap-2"
+                    onClick={() => handlePresetSelect(preset.url)}
+                    className="px-2.5 py-1 rounded-md bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
                   >
-                    <span>{item.label}</span>
-                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">
-                      {item.tag}
-                    </span>
+                    <span className="text-[10px] text-blue-400 font-mono font-medium">[{preset.tag}]</span>
+                    <span>{preset.label}</span>
                   </button>
                 ))}
               </div>
@@ -137,15 +135,19 @@ export default function URLScannerPage() {
           </form>
 
           {error && (
-            <div className="mt-4 p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 flex items-center gap-2 text-xs text-red-300">
-              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <div className="mt-4 p-3.5 rounded-lg bg-rose-950/20 border border-rose-900/30 flex items-center gap-2.5 text-xs text-rose-300">
+              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
         </div>
 
-        {/* 3. Scan Results View */}
-        {result && <ScanResultView result={result} />}
+        {/* Scan Result Component */}
+        {result && (
+          <div className="pt-2">
+            <ScanResultView result={result} />
+          </div>
+        )}
       </div>
     </DashboardShell>
   );

@@ -55,102 +55,101 @@ export default function ReportsPage() {
   return (
     <DashboardShell>
       <div className="space-y-6">
-        {/* 1. Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-              Forensic PDF Reports
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Forensic Audit Reports
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Generate and download formal audit reports for threat incidents and compliance records
+            <p className="text-xs text-slate-400 mt-0.5">
+              Download formal PDF audit reports for incident response, security compliance, and forensic records
             </p>
           </div>
 
           <button
             onClick={fetchScans}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>Refresh Reports</span>
+            <span>Refresh List</span>
           </button>
         </div>
 
-        {/* 2. Overview Banner */}
-        <div className="glass-panel rounded-2xl p-6 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Overview Card */}
+        <div className="panel-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+            <div className="p-3 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <FileText className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-100">
-                Automated ReportLab Engine v4.1
+              <h3 className="text-sm font-bold text-white">
+                Automated Forensic PDF Generator
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Every scanned threat payload is compiled into a standalone PDF containing technical feature tables and defensive countermeasures.
+              <p className="text-xs text-slate-400 mt-0.5 max-w-2xl">
+                Every scanned payload is structured into an executive PDF audit report with risk score telemetry, heuristic indicator tables, and SOC countermeasures.
               </p>
             </div>
           </div>
         </div>
 
-        {/* 3. Reports Ledger Table */}
-        <div className="glass-panel rounded-2xl overflow-hidden">
+        {/* Reports Ledger Table */}
+        <div className="panel-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="border-b border-slate-800 bg-slate-900/50 text-slate-400 uppercase tracking-wider">
+              <thead className="border-b border-slate-800 bg-slate-950/40 text-slate-400 font-semibold uppercase text-[11px]">
                 <tr>
                   <th className="py-3 px-4">Vector</th>
-                  <th className="py-3 px-4">Target Payload</th>
-                  <th className="py-3 px-4">Risk Level</th>
-                  <th className="py-3 px-4">Format</th>
+                  <th className="py-3 px-4">Target / Ingested Text</th>
+                  <th className="py-3 px-4">Severity Tier</th>
+                  <th className="py-3 px-4">Confidence</th>
                   <th className="py-3 px-4">Timestamp</th>
-                  <th className="py-3 px-4 text-right">Download PDF</th>
+                  <th className="py-3 px-4 text-right">Download</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-800/60">
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="py-10 text-center text-slate-500">
-                      Loading available reports...
+                    <td colSpan={6} className="py-12 text-center text-slate-400">
+                      Loading reports catalogue...
                     </td>
                   </tr>
                 ) : scans.length > 0 ? (
                   scans.map((scan) => (
-                    <tr key={scan.id} className="hover:bg-slate-900/60 transition-colors">
-                      <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-semibold text-slate-300">
+                    <tr key={scan.id} className="hover:bg-slate-800/30 transition-colors">
+                      <td className="py-3 px-4">
+                        <span className="px-2 py-0.5 rounded bg-slate-900 border border-slate-800 text-[10px] font-mono font-bold text-blue-400">
                           {scan.scan_type}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 max-w-sm truncate text-slate-200">
+                      <td className="py-3 px-4 max-w-md truncate font-mono text-slate-200">
                         {scan.target_text}
                       </td>
-                      <td className="py-3.5 px-4">
-                        <ThreatBadge level={scan.risk_level} />
+                      <td className="py-3 px-4">
+                        <ThreatBadge level={scan.risk_level} size="sm" />
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded bg-red-950/40 text-red-400 border border-red-900/40 text-[10px] font-bold">
-                          PDF Document
-                        </span>
+                      <td className="py-3 px-4 font-mono text-slate-300">
+                        {Math.round(scan.confidence * 100)}%
                       </td>
-                      <td className="py-3.5 px-4 text-slate-500 text-[11px]">
+                      <td className="py-3 px-4 text-slate-400 font-mono text-[11px]">
                         {formatDateTime(scan.created_at)}
                       </td>
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-3 px-4 text-right">
                         <a
                           href={api.getReportDownloadUrl(scan.id)}
                           target="_blank"
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-semibold transition-all"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors shadow-sm"
                         >
-                          <Download className="w-3.5 h-3.5" />
-                          <span>Export PDF</span>
+                          <FileDown className="w-3.5 h-3.5" />
+                          <span>PDF Report</span>
                         </a>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-10 text-center text-slate-500">
-                      No reports generated yet. Run a scan to create a report.
+                    <td colSpan={6} className="py-12 text-center text-slate-400">
+                      No reports available yet. Run a threat scan to automatically generate report entries.
                     </td>
                   </tr>
                 )}

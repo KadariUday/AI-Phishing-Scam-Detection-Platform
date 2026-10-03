@@ -8,6 +8,8 @@ import {
   ShieldAlert,
   Cpu,
   CheckCircle2,
+  Activity,
+  Layers,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -28,11 +30,11 @@ import { AnalyticsData } from "@/lib/types";
 import { api } from "@/lib/api";
 
 const RISK_COLORS: Record<string, string> = {
-  SAFE: "#10b981",
-  LOW: "#0ea5e9",
-  MEDIUM: "#f59e0b",
-  HIGH: "#f97316",
-  CRITICAL: "#ef4444",
+  SAFE: "#10B981",
+  LOW: "#06B6D4",
+  MEDIUM: "#F59E0B",
+  HIGH: "#F97316",
+  CRITICAL: "#EF4444",
 };
 
 export default function AnalyticsPage() {
@@ -46,7 +48,7 @@ export default function AnalyticsPage() {
         setData(res);
       } catch (e) {
         console.error("Failed to load analytics:", e);
-        // Fallback demo data
+        // Fallback clean data
         setData({
           total_scans: 74,
           scan_type_distribution: { URL: 42, MESSAGE: 21, EMAIL: 11 },
@@ -70,16 +72,16 @@ export default function AnalyticsPage() {
             { code: "IP_HOSTNAME", name: "Bare IP in Hostname", count: 18 },
             { code: "URGENCY_TRIGGER", name: "Coercive Urgency Trigger", count: 24 },
             { code: "CREDENTIAL_HARVESTING", name: "OTP / PIN Harvest Request", count: 16 },
-            { code: "SUSPICIOUS_TLD", name: "High-Abuse TLD", count: 14 },
-            { code: "NO_HTTPS", name: "Unencrypted Protocol", count: 22 },
+            { code: "SUSPICIOUS_TLD", name: "High-Abuse TLD Extension", count: 14 },
+            { code: "NO_HTTPS", name: "Unencrypted Plaintext Protocol", count: 22 },
           ],
           model_performance: {
             url_phishing_model: {
-              model_type: "RandomForest",
+              model_type: "RandomForest (21 Lexical Features)",
               metrics: { accuracy: 0.984, precision: 0.981, recall: 0.986, f1_score: 0.983, roc_auc: 0.994 },
             },
             nlp_scam_model: {
-              model_type: "LogisticRegression (TF-IDF)",
+              model_type: "LogisticRegression (TF-IDF Intent)",
               metrics: { accuracy: 0.968, precision: 0.964, recall: 0.971, f1_score: 0.965, roc_auc: 0.989 },
             },
           },
@@ -99,55 +101,48 @@ export default function AnalyticsPage() {
       }))
     : [];
 
-  const typeBarData = data
-    ? Object.entries(data.scan_type_distribution).map(([name, count]) => ({
-        name,
-        count,
-      }))
-    : [];
-
   return (
     <DashboardShell>
-      <div className="space-y-8">
-        {/* 1. Header */}
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-            Threat Intelligence & AI Analytics
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-800">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            Threat Intelligence & Analytics
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-0.5">
             Statistical risk distribution, temporal ingestion trends, indicator frequencies, and ML classifier metrics
           </p>
         </div>
 
-        {/* 2. Top Charts Grid */}
+        {/* Top Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Daily Scan Volume Area Chart */}
-          <div className="glass-panel rounded-2xl p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-cyan-400" />
-              Daily Ingestion Volume & Threat Rate
+          <div className="panel-card p-6">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-4">
+              <TrendingUp className="w-4 h-4 text-blue-400" />
+              <span>Daily Ingestion Volume & Threat Rate</span>
             </h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data?.daily_volume || []}>
                   <defs>
                     <linearGradient id="scansGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="threatsGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
                       <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="date" stroke="#64748b" textAnchor="end" fontSize={11} />
-                  <YAxis stroke="#64748b" fontSize={11} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                  <XAxis dataKey="date" stroke="#64748b" textAnchor="end" fontSize={11} tickLine={false} />
+                  <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#0f172a",
+                      backgroundColor: "#0F172A",
                       borderColor: "#334155",
-                      borderRadius: "0.75rem",
+                      borderRadius: "0.5rem",
                       fontSize: "12px",
                     }}
                   />
@@ -155,7 +150,7 @@ export default function AnalyticsPage() {
                     type="monotone"
                     dataKey="scans"
                     name="Total Scans"
-                    stroke="#06b6d4"
+                    stroke="#3b82f6"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#scansGrad)"
@@ -163,7 +158,7 @@ export default function AnalyticsPage() {
                   <Area
                     type="monotone"
                     dataKey="threats"
-                    name="High/Critical Threats"
+                    name="Hostile Threats"
                     stroke="#ef4444"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -175,12 +170,12 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Risk Level Distribution Pie */}
-          <div className="glass-panel rounded-2xl p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-4">
+          <div className="panel-card p-6 flex flex-col justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-4">
               <PieIcon className="w-4 h-4 text-orange-400" />
-              Risk Classification Distribution
+              <span>Risk Classification Breakdown</span>
             </h3>
-            <div className="h-64 w-full flex items-center justify-center">
+            <div className="h-56 w-full flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -189,8 +184,8 @@ export default function AnalyticsPage() {
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
-                    outerRadius={85}
+                    innerRadius={50}
+                    outerRadius={80}
                     paddingAngle={3}
                   >
                     {riskPieData.map((entry, index) => (
@@ -199,16 +194,16 @@ export default function AnalyticsPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#0f172a",
+                      backgroundColor: "#0F172A",
                       borderColor: "#334155",
-                      borderRadius: "0.75rem",
+                      borderRadius: "0.5rem",
                       fontSize: "12px",
                     }}
                   />
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-[11px] font-mono">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2 text-xs font-mono">
               {riskPieData.map((d) => (
                 <div key={d.name} className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
@@ -219,23 +214,23 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        {/* 3. Bottom Row: Top Threat Indicators & Model Evaluation Manifest */}
+        {/* Bottom Row: Top Threat Indicators & Model Evaluation */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Top Threat Indicators Frequency */}
-          <div className="glass-panel rounded-2xl p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-4">
-              <ShieldAlert className="w-4 h-4 text-red-400" />
-              Most Frequent Threat Indicators
+          <div className="panel-card p-6 space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-rose-400" />
+              <span>Most Frequent Threat Indicators</span>
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {data?.top_threat_indicators.map((ind, i) => (
-                <div key={i} className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 flex items-center justify-between">
+                <div key={i} className="p-3 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-slate-200 block">{ind.name}</span>
-                    <span className="text-[10px] text-slate-500 font-mono">{ind.code}</span>
+                    <span className="text-xs font-semibold text-slate-200 block">{ind.name}</span>
+                    <span className="text-[10px] text-slate-400 font-mono">{ind.code}</span>
                   </div>
-                  <span className="px-2.5 py-1 rounded-lg bg-red-500/10 text-red-400 font-mono font-bold text-xs border border-red-500/20">
-                    {ind.count} detections
+                  <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 font-mono font-semibold text-xs border border-rose-500/20">
+                    {ind.count} hits
                   </span>
                 </div>
               ))}
@@ -243,60 +238,87 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Model Performance Manifest */}
-          <div className="glass-panel rounded-2xl p-6">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-4">
+          <div className="panel-card p-6 space-y-4">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2">
               <Cpu className="w-4 h-4 text-emerald-400" />
-              Machine Learning Benchmark Metrics
+              <span>Machine Learning Cross-Validation Metrics</span>
             </h3>
-            <div className="space-y-4">
-              {/* URL Model */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-cyan-400">URL Phishing Classifier</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">
-                    Random Forest (21-dim)
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-2 text-center text-xs mt-3">
-                  <div className="p-2 rounded bg-slate-950">
-                    <span className="text-[10px] text-slate-500 block">Accuracy</span>
-                    <span className="font-mono font-bold text-emerald-400">98.4%</span>
-                  </div>
-                  <div className="p-2 rounded bg-slate-950">
-                    <span className="text-[10px] text-slate-500 block">F1-Score</span>
-                    <span className="font-mono font-bold text-emerald-400">98.3%</span>
-                  </div>
-                  <div className="p-2 rounded bg-slate-950">
-                    <span className="text-[10px] text-slate-500 block">ROC-AUC</span>
-                    <span className="font-mono font-bold text-cyan-400">0.994</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* NLP Model */}
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-orange-400">NLP Scam & Smishing Classifier</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-orange-500/20 text-orange-300">
-                    TF-IDF n-grams + Logistic
-                  </span>
+            {data?.model_performance && (
+              <div className="space-y-4">
+                {/* URL Model */}
+                <div className="p-3.5 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">URL Phishing Model</span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {data.model_performance.url_phishing_model.model_type}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2 pt-1 text-center font-mono">
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Accuracy</span>
+                      <span className="text-xs font-bold text-emerald-400">
+                        {Math.round(data.model_performance.url_phishing_model.metrics.accuracy * 1000) / 10}%
+                      </span>
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Precision</span>
+                      <span className="text-xs font-bold text-blue-400">
+                        {Math.round(data.model_performance.url_phishing_model.metrics.precision * 1000) / 10}%
+                      </span>
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Recall</span>
+                      <span className="text-xs font-bold text-indigo-400">
+                        {Math.round(data.model_performance.url_phishing_model.metrics.recall * 1000) / 10}%
+                      </span>
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">ROC-AUC</span>
+                      <span className="text-xs font-bold text-cyan-400">
+                        {data.model_performance.url_phishing_model.metrics.roc_auc}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center text-xs mt-3">
-                  <div className="p-2 rounded bg-slate-950">
-                    <span className="text-[10px] text-slate-500 block">Accuracy</span>
-                    <span className="font-mono font-bold text-emerald-400">96.8%</span>
+
+                {/* NLP Model */}
+                <div className="p-3.5 rounded-lg bg-slate-950 border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">NLP Psychological Coercion Model</span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {data.model_performance.nlp_scam_model.model_type}
+                    </span>
                   </div>
-                  <div className="p-2 rounded bg-slate-950">
-                    <span className="text-[10px] text-slate-500 block">F1-Score</span>
-                    <span className="font-mono font-bold text-emerald-400">96.5%</span>
-                  </div>
-                  <div className="p-2 rounded bg-slate-950">
-                    <span className="text-[10px] text-slate-500 block">ROC-AUC</span>
-                    <span className="font-mono font-bold text-cyan-400">0.989</span>
+                  <div className="grid grid-cols-4 gap-2 pt-1 text-center font-mono">
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Accuracy</span>
+                      <span className="text-xs font-bold text-emerald-400">
+                        {Math.round(data.model_performance.nlp_scam_model.metrics.accuracy * 1000) / 10}%
+                      </span>
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Precision</span>
+                      <span className="text-xs font-bold text-blue-400">
+                        {Math.round(data.model_performance.nlp_scam_model.metrics.precision * 1000) / 10}%
+                      </span>
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Recall</span>
+                      <span className="text-xs font-bold text-indigo-400">
+                        {Math.round(data.model_performance.nlp_scam_model.metrics.recall * 1000) / 10}%
+                      </span>
+                    </div>
+                    <div className="p-1.5 rounded bg-slate-900 border border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">ROC-AUC</span>
+                      <span className="text-xs font-bold text-cyan-400">
+                        {data.model_performance.nlp_scam_model.metrics.roc_auc}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

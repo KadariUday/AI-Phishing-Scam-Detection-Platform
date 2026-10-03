@@ -26,7 +26,7 @@ const PRESET_MESSAGES = [
   {
     label: "Legitimate Personal Chat",
     text: "Hey, are we still meeting for lunch at 12:30 pm today? Let me know if you want Italian or Mexican food.",
-    tag: "Benign",
+    tag: "Safe Baseline",
   },
 ];
 
@@ -54,46 +54,46 @@ export default function MessageScannerPage() {
 
   return (
     <DashboardShell>
-      <div className="space-y-8 max-w-5xl mx-auto">
-        {/* 1. Header */}
-        <div>
+      <div className="space-y-6 max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-800">
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20">
+            <span className="p-1 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
               <MessageSquareWarning className="w-4 h-4" />
             </span>
-            <span className="text-xs font-semibold text-orange-400 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">
               NLP Intent & Social Engineering Triage
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
             SMS & Message Scam Analyzer
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-0.5">
             Detects psychological manipulation triggers: artificial urgency, fear intimidation, credential/OTP requests, and embedded links.
           </p>
         </div>
 
-        {/* 2. Input Form Box */}
-        <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl">
+        {/* Input Form Box */}
+        <div className="panel-card p-6 sm:p-8">
           <form onSubmit={handleScan} className="space-y-4">
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-2">
-                Message Content (SMS, WhatsApp, Chat)
+                Message Content (SMS, WhatsApp, Direct Message) <span className="text-rose-400">*</span>
               </label>
               <textarea
                 required
                 rows={5}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Paste a suspicious SMS, WhatsApp message, social-media message, or chat text here..."
-                className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors shadow-inner resize-y"
+                placeholder="Paste a suspicious SMS, WhatsApp message, social media direct message, or chat text here..."
+                className="w-full p-4 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors shadow-inner resize-y"
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="w-full">
-                <span className="text-[11px] font-semibold text-slate-400 block mb-2">
-                  Quick Scam Samples:
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+              <div>
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
+                  Test Vectors:
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {PRESET_MESSAGES.map((item, i) => (
@@ -101,12 +101,10 @@ export default function MessageScannerPage() {
                       key={i}
                       type="button"
                       onClick={() => setText(item.text)}
-                      className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-cyan-300 font-medium transition-colors flex items-center gap-2"
+                      className="px-2.5 py-1 rounded-md bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-colors"
                     >
+                      <span className="text-[10px] text-amber-400 font-mono font-medium">[{item.tag}]</span>{" "}
                       <span>{item.label}</span>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">
-                        {item.tag}
-                      </span>
                     </button>
                   ))}
                 </div>
@@ -115,16 +113,16 @@ export default function MessageScannerPage() {
               <button
                 type="submit"
                 disabled={loading || !text.trim()}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 disabled:opacity-50 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-orange-500/20 whitespace-nowrap"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
               >
                 {loading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Analyzing Content...</span>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Analyzing Intent...</span>
                   </>
                 ) : (
                   <>
-                    <Search className="w-4 h-4" />
+                    <Search className="w-3.5 h-3.5" />
                     <span>Analyze Message</span>
                   </>
                 )}
@@ -133,15 +131,19 @@ export default function MessageScannerPage() {
           </form>
 
           {error && (
-            <div className="mt-4 p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 flex items-center gap-2 text-xs text-red-300">
-              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <div className="mt-4 p-3.5 rounded-lg bg-rose-950/20 border border-rose-900/30 flex items-center gap-2.5 text-xs text-rose-300">
+              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
         </div>
 
-        {/* 3. Scan Results View */}
-        {result && <ScanResultView result={result} />}
+        {/* Scan Result Component */}
+        {result && (
+          <div className="pt-2">
+            <ScanResultView result={result} />
+          </div>
+        )}
       </div>
     </DashboardShell>
   );

@@ -20,14 +20,14 @@ const PRESET_EMAILS = [
     sender: "support-billing@netflix-account-resolution.top",
     subject: "Payment Failed: Your subscription will be cancelled in 12 hours",
     body: "Dear Customer, we could not process your latest billing installment. Please update your debit or credit card number and CVV at http://netflix-billing-resolve.top to restore access.",
-    tag: "Credential Harvesting",
+    tag: "Credential Theft",
   },
   {
     label: "Legitimate Corporate Newsletter",
     sender: "newsletter@fastapi.tiangolo.com",
     subject: "FastAPI Release Notes: What is new in version 0.110.0",
     body: "Here are the latest updates from the FastAPI repository, including performance improvements and dependency updates. Check the full docs at https://fastapi.tiangolo.com",
-    tag: "Benign",
+    tag: "Safe Baseline",
   },
 ];
 
@@ -63,90 +63,88 @@ export default function EmailScannerPage() {
 
   return (
     <DashboardShell>
-      <div className="space-y-8 max-w-5xl mx-auto">
-        {/* 1. Header */}
-        <div>
+      <div className="space-y-6 max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="pb-2 border-b border-slate-800">
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            <span className="p-1 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
               <MailWarning className="w-4 h-4" />
             </span>
-            <span className="text-xs font-semibold text-blue-400 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wider">
               Multi-Vector Email Forensic Engine
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
-            Email Threat & BEC Analyzer
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            Email & BEC Threat Analyzer
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-0.5">
             Holistic header inspection, sender domain reputation, subject line psychological cues, and body link extraction.
           </p>
         </div>
 
-        {/* 2. Input Form Box */}
-        <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl">
+        {/* Input Form Box */}
+        <div className="panel-card p-6 sm:p-8">
           <form onSubmit={handleScan} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-                  Sender Email / Display Name
+                  Sender Email / Display Header
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+                  <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                   <input
                     type="text"
                     value={sender}
                     onChange={(e) => setSender(e.target.value)}
                     placeholder="security-alert@service.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                    className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-                  Subject Line
+                  Email Subject Line
                 </label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Immediate Action Required..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
+                  placeholder="e.g. URGENT: Action Required on Your Account"
+                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                 />
               </div>
             </div>
 
             <div>
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-300 block mb-1.5">
-                Email Body Content
+                Email Body Text & Embedded Hyperlinks <span className="text-rose-400">*</span>
               </label>
               <textarea
                 required
-                rows={6}
+                rows={5}
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="Paste the email body text including any embedded links or instructions..."
-                className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors shadow-inner resize-y"
+                placeholder="Paste the complete text or raw RFC 822 email content here..."
+                className="w-full p-4 rounded-lg bg-slate-950 border border-slate-800 font-mono text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
               />
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
-              <div className="w-full">
-                <span className="text-[11px] font-semibold text-slate-400 block mb-2">
-                  Sample Email Phishing Templates:
+              <div>
+                <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">
+                  Test Vectors:
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {PRESET_EMAILS.map((item, i) => (
+                  {PRESET_EMAILS.map((preset, i) => (
                     <button
                       key={i}
                       type="button"
-                      onClick={() => handlePresetSelect(item)}
-                      className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-cyan-300 font-medium transition-colors flex items-center gap-2"
+                      onClick={() => handlePresetSelect(preset)}
+                      className="px-2.5 py-1 rounded-md bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-colors"
                     >
-                      <span>{item.label}</span>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 font-mono">
-                        {item.tag}
-                      </span>
+                      <span className="text-[10px] text-indigo-400 font-mono font-medium">[{preset.tag}]</span>{" "}
+                      <span>{preset.label}</span>
                     </button>
                   ))}
                 </div>
@@ -155,16 +153,16 @@ export default function EmailScannerPage() {
               <button
                 type="submit"
                 disabled={loading || !body.trim()}
-                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 disabled:opacity-50 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-500/20 whitespace-nowrap"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
               >
                 {loading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Triage in Progress...</span>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Analyzing Email...</span>
                   </>
                 ) : (
                   <>
-                    <Search className="w-4 h-4" />
+                    <Search className="w-3.5 h-3.5" />
                     <span>Analyze Email</span>
                   </>
                 )}
@@ -173,15 +171,19 @@ export default function EmailScannerPage() {
           </form>
 
           {error && (
-            <div className="mt-4 p-3.5 rounded-xl bg-red-950/40 border border-red-800/60 flex items-center gap-2 text-xs text-red-300">
-              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <div className="mt-4 p-3.5 rounded-lg bg-rose-950/20 border border-rose-900/30 flex items-center gap-2.5 text-xs text-rose-300">
+              <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
         </div>
 
-        {/* 3. Scan Results View */}
-        {result && <ScanResultView result={result} />}
+        {/* Scan Result Component */}
+        {result && (
+          <div className="pt-2">
+            <ScanResultView result={result} />
+          </div>
+        )}
       </div>
     </DashboardShell>
   );

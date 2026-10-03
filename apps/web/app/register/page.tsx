@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Shield, Lock, Mail, User, ArrowRight, AlertCircle, Sparkles, UserPlus } from "lucide-react";
+import { Shield, Lock, Mail, User, ArrowRight, AlertCircle, UserPlus } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function RegisterPage() {
@@ -23,49 +23,44 @@ export default function RegisterPage() {
       await api.login(email, password);
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Registration failed. Please try again.");
+      setError(err.message || "Registration failed. Please check details.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-cyber-950 text-slate-100 flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* 1. Aurora Atmospheric Background */}
-      <div className="aurora-bg">
-        <div className="aurora-blob-1" />
-        <div className="aurora-blob-2" />
-        <div className="aurora-blob-3" />
-      </div>
+    <div className="min-h-screen bg-[#090D16] text-slate-100 flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden">
+      {/* Background Gradients */}
+      <div className="fixed inset-0 bg-radial-gradient pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-grid-pattern pointer-events-none z-0 opacity-60" />
 
-      {/* 2. Cyber Grid */}
-      <div className="fixed inset-0 cyber-grid-overlay pointer-events-none z-0 opacity-80" />
-
-      {/* 3. Header Branding */}
+      {/* Brand Header */}
       <Link href="/" className="flex items-center gap-3 mb-8 relative z-10 group">
-        <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 shadow-lg shadow-cyan-500/25 group-hover:shadow-cyan-400/40 transition-all">
-          <Shield className="w-6 h-6 text-slate-950 stroke-[2.5]" />
+        <div className="p-2.5 rounded-xl bg-blue-600 text-white shadow-md shadow-blue-500/20 group-hover:bg-blue-500 transition-colors">
+          <Shield className="w-6 h-6" />
         </div>
-        <span className="text-xl font-extrabold tracking-tight text-slate-100 flex items-center gap-1.5">
-          PHISHGUARD <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">AI</span>
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xl font-bold tracking-tight text-white">
+            PhishGuard
+          </span>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">
+            SOC
+          </span>
+        </div>
       </Link>
 
-      {/* 4. Register Card */}
-      <div className="w-full max-w-md glass-hud hud-corner rounded-2xl p-8 relative z-10 shadow-2xl backdrop-blur-2xl">
+      {/* Register Card */}
+      <div className="w-full max-w-md panel-card p-8 relative z-10">
         <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-mono font-bold uppercase tracking-wider mb-2">
-            <UserPlus className="w-3 h-3 text-cyan-400" />
-            <span>NEW ANALYST ONBOARDING</span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-100 tracking-tight">Create Operator Seat</h2>
-          <p className="text-xs text-slate-400 mt-1 font-mono">
-            Provision local credentials for threat detection
+          <h2 className="text-2xl font-bold text-white tracking-tight">Create Analyst Account</h2>
+          <p className="text-xs text-slate-400 mt-1">
+            Provision personal credentials for threat investigations
           </p>
         </div>
 
         {error && (
-          <div className="p-3.5 mb-5 rounded-xl bg-rose-950/40 border border-rose-500/40 flex items-center gap-2 text-xs text-rose-300 shadow-lg shadow-rose-950/50">
+          <div className="p-3.5 mb-5 rounded-lg bg-rose-950/20 border border-rose-900/30 flex items-center gap-2.5 text-xs text-rose-300">
             <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
             <span>{error}</span>
           </div>
@@ -73,53 +68,52 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-xs font-mono font-bold text-slate-300 block mb-1.5 uppercase tracking-wider">
-              Analyst Name
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 uppercase tracking-wider">
+              Full Name
             </label>
             <div className="relative">
-              <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Alex Morgan"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl neu-input text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all font-mono"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-mono font-bold text-slate-300 block mb-1.5 uppercase tracking-wider">
-              Email Address
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 uppercase tracking-wider">
+              Work Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="alex.morgan@company.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl neu-input text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all font-mono"
+                placeholder="analyst@domain.com"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-xs font-mono font-bold text-slate-300 block mb-1.5 uppercase tracking-wider">
-              Password (min 8 chars)
+            <label className="text-xs font-semibold text-slate-300 block mb-1.5 uppercase tracking-wider">
+              Account Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3 pointer-events-none" />
               <input
                 type="password"
                 required
-                minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl neu-input text-xs text-slate-100 placeholder-slate-500 focus:outline-none transition-all font-mono"
+                placeholder="Minimum 8 characters"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors font-mono"
               />
             </div>
           </div>
@@ -127,16 +121,16 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-3 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-black text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-hud-cyan disabled:opacity-50"
+            className="w-full py-2.5 mt-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm"
           >
-            <span>{loading ? "PROVISIONING ACCOUNT..." : "PROVISION OPERATOR ACCOUNT"}</span>
+            <span>{loading ? "Creating Account..." : "Register & Sign In"}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <p className="text-center text-xs text-slate-400 mt-6 font-mono">
-          Already registered?{" "}
-          <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-bold underline transition-colors">
+        <p className="text-center text-xs text-slate-400 mt-6">
+          Already have an account?{" "}
+          <Link href="/login" className="text-blue-400 hover:text-blue-300 font-semibold underline transition-colors">
             Sign In Here
           </Link>
         </p>
